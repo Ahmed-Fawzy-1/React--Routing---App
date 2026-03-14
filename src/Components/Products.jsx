@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '../store/cartSlice'
 
 function Products() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,7 +30,12 @@ function Products() {
   }
 
   const handleAddToCart = (product) => {
-    alert(`✅ "${product.title}" added to cart!`)
+    dispatch(addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.images?.[0]
+    }))
   }
 
   const filtered = products.filter(p =>
@@ -48,10 +56,12 @@ function Products() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Product Dashboard</h1>
           <div className="flex items-center gap-3">
+            <span className="text-gray-400 text-lg cursor-pointer hover:text-gray-600">⚙️</span>
+            <span className="text-gray-400 text-lg cursor-pointer hover:text-gray-600">🔧</span>
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-teal-400 w-52"
@@ -62,7 +72,7 @@ function Products() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {filtered.map(product => (
             <div
               key={product.id}
@@ -78,9 +88,9 @@ function Products() {
               </div>
 
               {/* Info */}
-              <div className="p-4">
+              <div className="p-3">
                 <p className="font-semibold text-gray-800 text-sm truncate">{product.title}</p>
-                <p className="text-teal-600 font-bold text-sm mt-1">${product.price}</p>
+                <p className="text-gray-600 text-sm mt-0.5">${product.price}</p>
 
                 {/* Actions */}
                 <div className="flex items-center gap-2 mt-3">
@@ -95,7 +105,7 @@ function Products() {
                     className="p-2 rounded-lg border border-gray-200 hover:border-teal-400 hover:text-teal-500 transition-colors text-gray-400"
                     title="Add to Cart"
                   >
-                    🛒
+                    🤍
                   </button>
                   <button
                     onClick={() => handleDelete(product.id)}

@@ -1,6 +1,10 @@
-import { Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 function NavBar() {
+  const cartItems = useSelector(state => state.cart.items)
+  const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center gap-2">
@@ -27,10 +31,15 @@ function NavBar() {
         <NavLink
           to="/cart"
           className={({ isActive }) =>
-            `text-sm font-medium transition-colors ${isActive ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600'}`
+            `text-sm font-medium transition-colors flex items-center gap-1 ${isActive ? 'text-gray-800 font-bold' : 'text-gray-600 hover:text-teal-600'}`
           }
         >
           Cart 🛒
+          {totalQty > 0 && (
+            <span className="bg-teal-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {totalQty}
+            </span>
+          )}
         </NavLink>
       </div>
 
